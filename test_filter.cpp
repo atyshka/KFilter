@@ -25,6 +25,7 @@ int main(int argc, char const *argv[])
     filter.H_ = H;
     filter.R_ = R;
     filter.Q_ = Q;
+    std::cout << filter.x_ << std::endl;
     filter.predict();
     std::cout << filter.x_ << std::endl;
     Eigen::VectorXd measurement(1, 1);
