@@ -6,6 +6,7 @@ compiler:
   - gcc
 
 before_script:
+  - sudo apt update
   - sudo apt install libeigen3-dev
   # create a build folder for the out-of-source build
   - mkdir build
