@@ -5,9 +5,12 @@ language: cpp
 compiler:
   - gcc
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y libeigen3-dev
+
 before_script:
-  - sudo apt update
-  - sudo apt install libeigen3-dev
+  - cmake --version
   # create a build folder for the out-of-source build
   - mkdir build
   # switch to build directory
@@ -19,4 +22,3 @@ before_script:
 script:
   # once CMake has done its job we just build using make as usual
   - make
-  - make test

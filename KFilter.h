@@ -5,7 +5,11 @@
 #ifndef KF_LIBRARY_KFILTER_H
 #define KF_LIBRARY_KFILTER_H
 
+#ifdef USE_NEW_EIGEN_HEADERS
 #include <Eigen/Dense>
+#else
+#include <eigen3/Eigen/Dense>
+#endif
 
 class KFilter {
 public:
