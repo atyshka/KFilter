@@ -4,7 +4,6 @@ using namespace Eigen;
 
 int main(int argc, char const *argv[])
 {
-    KFilter filter;
     Matrix2d F;
     F << 1, 0.1,
          0, 1;
@@ -19,18 +18,13 @@ int main(int argc, char const *argv[])
     Q << 0.0, 0.0,
          0.0, 0.1;
 
-    filter.F_ = F;
-    filter.x_ = x;
-    filter.P_ = P;
-    filter.H_ = H;
-    filter.R_ = R;
-    filter.Q_ = Q;
-    std::cout << filter.x_ << std::endl;
+    KFilter filter(F, x, P, Q, H, R);
+    std::cout << filter.x() << std::endl;
     filter.predict();
-    std::cout << filter.x_ << std::endl;
+    std::cout << filter.x() << std::endl;
     Eigen::VectorXd measurement(1, 1);
     measurement << 10.3;
     filter.update(measurement);
-    std::cout << filter.x_ << std::endl;
+    std::cout << filter.x() << std::endl;
     return 0;
 }
