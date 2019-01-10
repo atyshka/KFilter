@@ -3,7 +3,7 @@
 //
 
 #include "KFilter.h"
-#include <exception>
+#include "Exceptions.h"
 using namespace Eigen;
 
 
@@ -12,6 +12,7 @@ KFilter::KFilter(int state_dimension, int measurement_dimension) :
     measurement_dimension_(measurement_dimension)
 {
     // Initialize all matrices to correct size and default values
+    // We'll directly set since we know these dimensions are valid
     x_ = VectorXd::Zero(state_dimension);
     F_ = MatrixXd::Identity(state_dimension, state_dimension);
     P_ = MatrixXd::Identity(state_dimension, state_dimension);
@@ -25,8 +26,17 @@ KFilter::KFilter(MatrixXd F,
                  MatrixXd P,
                  MatrixXd Q,
                  MatrixXd H,
-                 MatrixXd R) : F_(F), x_(x), P_(P), Q_(Q), H_(H), R_(R)
+                 MatrixXd R)
 {
+    state_dimension_ = x.rows();
+    measurement_dimension_ = R.rows();
+    // Use these functions instead of direct set so we can check dimensions
+    setStateTransition(F);
+    setInitialState(x);
+    setCovariance(P);
+    setProcessNoise(Q);
+    setMeasurementFunction(H);
+    setMeasurementNoise(R);
 }
 
 void KFilter::predict() 
@@ -48,3 +58,55 @@ void KFilter::update(VectorXd z)
     P_ = P_ - (K * H_ * P_);
 }
 
+void KFilter::setInitialState(Eigen::VectorXd x)
+{
+    if (x.rows() == state_dimension_) {
+        x_ = x;
+    } else {
+        throw(InvalidDimensionException());
+    }
+}
+
+void KFilter::setStateTransition(Eigen::MatrixXd F)
+{
+    if (F.rows() == state_dimension_ && F.cols() == state_dimension_) {
+        F_ = F;
+    } else {
+        throw(InvalidDimensionException());
+    }
+}
+void KFilter::setCovariance(Eigen::MatrixXd P)
+{
+    if (P.rows() == state_dimension_ && P.cols() == state_dimension_) {
+        P_ = P;
+    } else {
+        throw(InvalidDimensionException());
+    }
+}
+
+void KFilter::setMeasurementFunction(Eigen::MatrixXd H)
+{
+    if (H.rows() == measurement_dimension_ && H.cols() == state_dimension_) {
+        H_ = H;
+    } else {
+        throw(InvalidDimensionException());
+    }
+}
+
+void KFilter::setMeasurementNoise(Eigen::MatrixXd R)
+{
+    if (R.rows() == measurement_dimension_ && R.cols() == measurement_dimension_) {
+        R_ = R;
+    } else {
+        throw(InvalidDimensionException());
+    }
+}
+
+void KFilter::setProcessNoise(Eigen::MatrixXd Q)
+{
+    if (Q.rows() == state_dimension_ && Q.cols() == state_dimension_) {
+        Q_ = Q;
+    } else {
+        throw(InvalidDimensionException());
+    }
+}
